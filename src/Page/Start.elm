@@ -23,7 +23,7 @@ view _ =
             "rooms/join"
     in
     div [ class "start-wrapper" ]
-        [ h1 [ class "start-header" ] [ text "Password" ]
+        [ h1 [ class "password-header" ] [ text "Password" ]
         , a [ href newRoomPath, class "start-create-button button" ] [ text "Create New Room" ]
         , a [ href joinRoomPath, class "start-join-button button" ] [ text "Join Room" ]
         ]

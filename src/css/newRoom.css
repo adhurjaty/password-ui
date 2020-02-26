@@ -1,0 +1,20 @@
+.start-create-button {
+    grid-area: create-button;
+}
+
+.new-room-name-input {
+    grid-area: name-input;
+}
+
+.new-room-wrapper {
+    display: grid;
+    height: 200px;
+    justify-items: center;
+    align-items: center;
+    grid-template-rows: 50px 1fr;
+    grid-template-columns: 1fr 400px 1fr;
+    grid-template-areas:
+        ". . ."
+        ". pass-header ."
+        ". name-input .";
+}

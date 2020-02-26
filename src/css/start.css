@@ -1,7 +1,3 @@
-.start-header {
-    grid-area: header;
-}
-
 .start-create-button {
     grid-area: create-button;
 }
@@ -19,7 +15,7 @@
     grid-template-columns: 1fr 400px 1fr;
     grid-template-areas:
         ". . ."
-        ". header ."
+        ". pass-header ."
         ". create-button ."
         ". join-button .";
 }

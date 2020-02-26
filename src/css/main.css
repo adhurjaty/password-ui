@@ -24,3 +24,9 @@ img {
   margin: 20px 0;
   max-width: 200px;
 }
+
+.password-header {
+    grid-area: pass-header;
+}
+
+
