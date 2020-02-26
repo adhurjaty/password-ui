@@ -1,4 +1,6 @@
 import './main.css';
+import './start.css';
+import './picnic.min.css';
 import { Elm } from './Main.elm';
 import * as serviceWorker from './serviceWorker';
 

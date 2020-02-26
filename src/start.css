@@ -1,0 +1,25 @@
+.start-header {
+    grid-area: header;
+}
+
+.start-create-button {
+    grid-area: create-button;
+}
+
+.start-join-button {
+    grid-area: join-button;
+}
+
+.start-wrapper {
+    display: grid;
+    height: 300px;
+    justify-items: center;
+    align-items: center;
+    grid-template-rows: 50px 1fr 1fr 1fr;
+    grid-template-columns: 1fr 400px 1fr;
+    grid-template-areas:
+        ". . ."
+        ". header ."
+        ". create-button ."
+        ". join-button .";
+}

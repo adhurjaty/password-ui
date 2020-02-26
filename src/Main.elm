@@ -50,7 +50,6 @@ initCurrentPage ( model, existingCmds ) =
     , Cmd.batch [ existingCmds, mappedPageCmds ]
     )
 
-
 ---- UPDATE ----
 
 type Msg
