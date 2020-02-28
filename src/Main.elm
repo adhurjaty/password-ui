@@ -3,7 +3,7 @@ module Main exposing (..)
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Html exposing (..)
-import Html.Attributes exposing (src)
+import Html.Attributes exposing (src, class)
 import Url exposing (Url)
 
 import Page.Start as Start
@@ -55,6 +55,7 @@ initCurrentPage ( model, existingCmds ) =
 type Msg
     = LinkClicked UrlRequest
     | UrlChanged Url
+    | StartMsg Start.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -66,8 +67,13 @@ update msg model =
 view : Model -> Document Msg
 view model =
     { title = "Password"
-    , body = [ currentView model ]
+    , body = [ viewTemplate model ]
     }
+
+viewTemplate : Model -> Html Msg
+viewTemplate model =
+    div [ class "content-wrapper" ]
+        [ currentView model ]
 
 currentView : Model -> Html Msg
 currentView model =
@@ -77,6 +83,7 @@ currentView model =
     
         StartPage pageModel ->
             Start.view pageModel
+                |> Html.map StartMsg
 
 notFoundView : Html msg
 notFoundView =

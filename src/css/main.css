@@ -29,4 +29,14 @@ img {
     grid-area: pass-header;
 }
 
+.content-wrapper {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    grid-template-rows: 50px 1fr;
+    grid-template-columns: 1fr 400px 1fr;
+    grid-template-areas:
+        ". . ."
+        ". content .";
+}
 

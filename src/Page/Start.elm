@@ -1,4 +1,4 @@
-module Page.Start exposing (Model, init, view)
+module Page.Start exposing (Model, Msg, init, view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -6,7 +6,7 @@ import Html.Attributes exposing (..)
 type alias Model =
     { }
 
-init : ( Model, Cmd msg )
+init : ( Model, Cmd Msg )
 init =
     ( initialModel, Cmd.none )
 
@@ -14,7 +14,7 @@ initialModel : Model
 initialModel =
     {}
 
-view : Model -> Html msg
+view : Model -> Html Msg
 view _ =
     let
         newRoomPath = 
@@ -27,5 +27,8 @@ view _ =
         , a [ href newRoomPath, class "start-create-button button" ] [ text "Create New Room" ]
         , a [ href joinRoomPath, class "start-join-button button" ] [ text "Join Room" ]
         ]
+
+type Msg
+    = NoOp
     
 
