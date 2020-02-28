@@ -1,9 +1,9 @@
-module Page.NewRoom exposing (view)
+module Page.NewRoom exposing (Model, Msg, init, view)
 
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 
 type alias Model =
     { navKey : Nav.Key
@@ -23,17 +23,19 @@ initialModel navKey =
     }
 
 type Msg
-    = StoreName
+    = StoreName String
     | CreateRoom
     | RoomCreated
 
 view : Model -> Html Msg
 view model =
     div [ class "new-room-wrapper" ]
-        [ h1 [ class "password-header" ] [ text "Passwrod" ]
+        [ h1 [ class "password-header" ] [ text "Password" ]
         , input [ class "new-room-name-input"
                 , type_ "text"
                 , placeholder "Player Name"
+                , value model.name
+                , onInput StoreName
                 ]
                 []
         ]

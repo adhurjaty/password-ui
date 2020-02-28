@@ -8,10 +8,11 @@
 
 .new-room-wrapper {
     display: grid;
-    height: 200px;
+    grid-area: content;
+    height: 150px;
     justify-items: center;
     align-items: center;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 50px 1fr;
     grid-template-areas:
         "pass-header"
         "name-input";

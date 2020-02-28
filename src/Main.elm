@@ -7,6 +7,7 @@ import Html.Attributes exposing (src, class)
 import Url exposing (Url)
 
 import Page.Start as Start
+import Page.NewRoom as NewRoom
 import Route exposing (Route)
 
 ---- MODEL ----
@@ -14,6 +15,7 @@ import Route exposing (Route)
 type Page
     = NotFoundPage
     | StartPage Start.Model
+    | NewRoomPage NewRoom.Model
 
 type alias Model =
     { route : Route
@@ -45,6 +47,12 @@ initCurrentPage ( model, existingCmds ) =
                             Start.init
                     in
                     ( StartPage pageModel, Cmd.none )
+                Route.NewRoom ->
+                    let
+                        ( pageModel, pageCmds ) =
+                            NewRoom.init model.navKey
+                    in
+                    ( NewRoomPage pageModel, Cmd.none )
     in
     ( { model | page = currentPage } 
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -56,11 +64,35 @@ type Msg
     = LinkClicked UrlRequest
     | UrlChanged Url
     | StartMsg Start.Msg
+    | NewRoomMsg NewRoom.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case (msg, model.page) of
+        ( LinkClicked urlRequest, _ ) ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model
+                    , Nav.pushUrl model.navKey (Url.toString url)
+                    )
+            
+                Browser.External url ->
+                    ( model
+                    , Nav.load url
+                    )
+                
+    
+        ( UrlChanged url, _ ) ->
+            let
+                newRoute =
+                    Route.parseUrl url
+            in
+            ( { model | route = newRoute }, Cmd.none )
+                |> initCurrentPage
+            
+        (_, _) ->
+             ( model, Cmd.none )
 
 ---- VIEW ----
 
@@ -84,6 +116,11 @@ currentView model =
         StartPage pageModel ->
             Start.view pageModel
                 |> Html.map StartMsg
+
+        NewRoomPage pageModel ->
+            NewRoom.view pageModel
+                |> Html.map NewRoomMsg
+
 
 notFoundView : Html msg
 notFoundView =

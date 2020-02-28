@@ -7,6 +7,7 @@ import Url.Parser exposing (..)
 type Route
     = NotFound
     | Start
+    | NewRoom
 
 parseUrl : Url -> Route
 parseUrl url =
@@ -20,6 +21,8 @@ matchRoute : Parser (Route -> a) a
 matchRoute =
     oneOf
         [ map Start top
+        , map Start (s "start")
+        , map NewRoom (s "rooms" </> s "new")
         ]
 
 pushUrl : Route -> Nav.Key -> Cmd msg
@@ -35,3 +38,6 @@ routeToString route =
         
         Start ->
             "/start"
+
+        NewRoom ->
+            "/rooms/new"
