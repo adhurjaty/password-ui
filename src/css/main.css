@@ -29,6 +29,11 @@ img {
     grid-area: pass-header;
 }
 
+.form-error {
+    grid-area: error;
+    color: red;
+}
+
 .content-wrapper {
     display: grid;
     justify-items: center;

@@ -6,14 +6,20 @@
     grid-area: name-input;
 }
 
+.new-room-submit {
+    grid-area: name-submit;
+}
+
 .new-room-wrapper {
     display: grid;
     grid-area: content;
-    height: 150px;
+    height: 200px;
     justify-items: center;
     align-items: center;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: 50px 1fr 1fr 1fr;
     grid-template-areas:
         "pass-header"
-        "name-input";
+        "name-input"
+        "name-submit"
+        "error";
 }
