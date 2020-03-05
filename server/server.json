@@ -1,0 +1,13 @@
+{
+    "rooms": [
+        {
+            "id": "wxyz",
+            "players": [
+                {
+                    "id": "lkasdklj",
+                    "name": "Jordan"
+                }
+            ]
+        }
+    ]
+}

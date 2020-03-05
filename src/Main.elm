@@ -82,7 +82,15 @@ update msg model =
                     , Nav.load url
                     )
                 
-    
+        ( NewRoomMsg subMsg, NewRoomPage roomModel ) ->
+            let
+                ( updatedRoomModel, updatedCmd ) =
+                    NewRoom.update subMsg roomModel
+            in
+            ( { model | page = NewRoomPage updatedRoomModel }
+            , Cmd.map NewRoomMsg updatedCmd
+            )  
+
         ( UrlChanged url, _ ) ->
             let
                 newRoute =

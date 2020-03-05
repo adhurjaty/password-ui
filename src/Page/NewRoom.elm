@@ -1,16 +1,19 @@
-module Page.NewRoom exposing (Model, Msg, init, view)
+module Page.NewRoom exposing (Model, Msg, init, view, update)
 
 import Api exposing (urlBase)
 import Browser.Navigation as Nav
 import Components exposing (viewError)
+import Error exposing (buildErrorMessage)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Http
+import Player exposing (PlayerId, emptyPlayerId)
+import Room exposing (Room, RoomId, NewRoom, emptyRoomId, newRoomEncoder, newRoomDecoder)
 
 type alias Model =
     { navKey : Nav.Key
-    , name : String
+    , room : NewRoom
     , createError : Maybe String
     }
 
@@ -21,14 +24,21 @@ init navKey =
 initialModel : Nav.Key -> Model
 initialModel navKey =
     { navKey = navKey
-    , name = ""
+    , room = initNewRoom
     , createError = Nothing
+    }
+
+initNewRoom : NewRoom
+initNewRoom =
+    { id = emptyRoomId
+    , playerId = emptyPlayerId
+    , playerName = ""
     }
 
 type Msg
     = StoreName String
     | CreateRoom
-    | RoomCreated
+    | RoomCreated (Result Http.Error NewRoom)
 
 view : Model -> Html Msg
 view model =
@@ -44,7 +54,7 @@ viewForm model =
         , input [ class "new-room-name-input"
                 , type_ "text"
                 , placeholder "Player Name"
-                , value model.name
+                , value model.room.playerName
                 , onInput StoreName
                 ]
                 []
@@ -59,22 +69,30 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         StoreName name ->
-            ( { model | name = name }, Cmd.none )            
+            let
+                oldRoom = model.room
+                newRoom = { oldRoom | playerName = name }
+            in
+            ( { model | room = newRoom }, Cmd.none )            
     
         CreateRoom ->
-            ( model, createRoom model.name )
+            ( model, createRoom model.room.playerName )
 
-        RoomCreated ->
+        RoomCreated (Ok room) ->
             ( model, Cmd.none )
 
-createRoom : String -> Cmd msg
+        RoomCreated (Err error) ->
+            ( {model | createError = Just (buildErrorMessage error) }
+            , Cmd.none
+            )
+
+createRoom : String -> Cmd Msg
 createRoom name =
     Http.post
         { url = urlBase ++ "rooms/new"
         , body = Http.jsonBody (newRoomEncoder name)
-        , expect = Http.expectJson RoomCreated roomEncoder
+        , expect = Http.expectJson RoomCreated newRoomDecoder
         }
 
-
-            
+          
     
