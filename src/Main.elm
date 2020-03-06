@@ -101,7 +101,16 @@ update msg model =
             in
             ( { model | page = NewRoomPage updatedRoomModel }
             , Cmd.map NewRoomMsg updatedCmd
-            )  
+            )
+
+        ( StartRoomMsg subMsg, StartRoomPage roomModel ) ->
+            let
+                ( updatedRoomModel,  updatedCmd ) =
+                    StartRoom.update subMsg roomModel
+            in
+            ( { model | page = StartRoomPage updatedRoomModel }
+            , Cmd.map StartRoomMsg updatedCmd
+            )
 
         ( UrlChanged url, _ ) ->
             let
