@@ -3,11 +3,13 @@ module Route exposing (Route(..), pushUrl, parseUrl)
 import Browser.Navigation as Nav
 import Url exposing (Url)
 import Url.Parser exposing (..)
+import Room exposing (RoomId)
 
 type Route
     = NotFound
     | Start
     | NewRoom
+    | StartRoom RoomId
 
 parseUrl : Url -> Route
 parseUrl url =
@@ -23,6 +25,7 @@ matchRoute =
         [ map Start top
         , map Start (s "start")
         , map NewRoom (s "rooms" </> s "new")
+        , map StartRoom (s "rooms" </> Room.idParser )
         ]
 
 pushUrl : Route -> Nav.Key -> Cmd msg
@@ -41,3 +44,6 @@ routeToString route =
 
         NewRoom ->
             "/rooms/new"
+
+        StartRoom roomId ->
+            "/rooms/" ++ Room.idToString roomId

@@ -5,14 +5,18 @@ module Room exposing
     , emptyRoom
     , emptyRoomId
     , idDecoder
+    , idToString
+    , idParser
     , newRoomEncoder
     , newRoomDecoder
+    , roomDecoder
     )
 
 import Json.Decode as Decode exposing (Decoder, int, list, string)
 import Json.Decode.Pipeline exposing (required, optional)
 import Json.Encode as Encode
 import Player exposing (Player, PlayerId, playersDecoder)
+import Url.Parser exposing (Parser, custom)
 
 type alias Room =
     { id : RoomId
@@ -30,6 +34,15 @@ type RoomId
 idDecoder : Decoder RoomId
 idDecoder =
     Decode.map RoomId string
+
+idToString : RoomId -> String
+idToString (RoomId id) = id
+
+idParser : Parser (RoomId -> a) a
+idParser =
+    custom "ROOMID" <|
+        \roomId ->
+            Maybe.map RoomId (Just roomId)
 
 -- roomEncoder : Room -> Encode.Value
 -- roomEncoder room =
@@ -62,3 +75,8 @@ newRoomDecoder =
         |> required "playerId" Player.idDecoder
         |> optional "playerName" string ""
 
+roomDecoder : Decoder Room
+roomDecoder =
+    Decode.succeed Room
+        |> required "id" idDecoder
+        |> required "players" playersDecoder

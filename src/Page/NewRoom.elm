@@ -10,6 +10,7 @@ import Html.Events exposing (onClick, onInput)
 import Http
 import Player exposing (PlayerId, emptyPlayerId)
 import Room exposing (Room, RoomId, NewRoom, emptyRoomId, newRoomEncoder, newRoomDecoder)
+import Route
 
 type alias Model =
     { navKey : Nav.Key
@@ -78,8 +79,9 @@ update msg model =
         CreateRoom ->
             ( model, createRoom model.room.playerName )
 
-        RoomCreated (Ok room) ->
-            ( model, Cmd.none )
+        RoomCreated (Ok newRoom) ->
+            ( { model | room = newRoom, createError = Nothing }
+            , Route.pushUrl (Route.StartRoom newRoom.id) model.navKey )
 
         RoomCreated (Err error) ->
             ( {model | createError = Just (buildErrorMessage error) }

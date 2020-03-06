@@ -8,6 +8,7 @@ import Url exposing (Url)
 
 import Page.Start as Start
 import Page.NewRoom as NewRoom
+import Page.StartRoom as StartRoom
 import Route exposing (Route)
 
 ---- MODEL ----
@@ -16,6 +17,7 @@ type Page
     = NotFoundPage
     | StartPage Start.Model
     | NewRoomPage NewRoom.Model
+    | StartRoomPage StartRoom.Model
 
 type alias Model =
     { route : Route
@@ -41,18 +43,27 @@ initCurrentPage ( model, existingCmds ) =
             case model.route of
                 Route.NotFound ->
                     ( NotFoundPage, Cmd.none )
+
                 Route.Start ->
                     let
                         ( pageModel, pageCmds ) =
                             Start.init
                     in
-                    ( StartPage pageModel, Cmd.none )
+                    ( StartPage pageModel, Cmd.map StartMsg pageCmds )
+
                 Route.NewRoom ->
                     let
                         ( pageModel, pageCmds ) =
                             NewRoom.init model.navKey
                     in
-                    ( NewRoomPage pageModel, Cmd.none )
+                    ( NewRoomPage pageModel, Cmd.map NewRoomMsg pageCmds )
+
+                Route.StartRoom roomId ->
+                    let
+                        ( pageModel, pageCmds ) =
+                            StartRoom.init roomId model.navKey
+                    in
+                    ( StartRoomPage pageModel, Cmd.map StartRoomMsg pageCmds )
     in
     ( { model | page = currentPage } 
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -65,6 +76,7 @@ type Msg
     | UrlChanged Url
     | StartMsg Start.Msg
     | NewRoomMsg NewRoom.Msg
+    | StartRoomMsg StartRoom.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -128,6 +140,10 @@ currentView model =
         NewRoomPage pageModel ->
             NewRoom.view pageModel
                 |> Html.map NewRoomMsg
+
+        StartRoomPage pageModel ->
+            StartRoom.view pageModel
+                |> Html.map StartRoomMsg
 
 
 notFoundView : Html msg
