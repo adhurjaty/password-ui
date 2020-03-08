@@ -9,7 +9,7 @@ type Route
     = NotFound
     | Start
     | NewRoom
-    | StartRoom RoomId
+    | GameRoom RoomId
 
 parseUrl : Url -> Route
 parseUrl url =
@@ -25,7 +25,7 @@ matchRoute =
         [ map Start top
         , map Start (s "start")
         , map NewRoom (s "rooms" </> s "new")
-        , map StartRoom (s "rooms" </> Room.idParser )
+        , map GameRoom (s "rooms" </> Room.idParser )
         ]
 
 pushUrl : Route -> Nav.Key -> Cmd msg
@@ -45,5 +45,5 @@ routeToString route =
         NewRoom ->
             "/rooms/new"
 
-        StartRoom roomId ->
+        GameRoom roomId ->
             "/rooms/" ++ Room.idToString roomId

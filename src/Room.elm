@@ -12,6 +12,7 @@ module Room exposing
     , roomDecoder
     )
 
+import Game exposing (Game, gameDecoder)
 import Json.Decode as Decode exposing (Decoder, int, list, string)
 import Json.Decode.Pipeline exposing (required, optional)
 import Json.Encode as Encode
@@ -21,6 +22,7 @@ import Url.Parser exposing (Parser, custom)
 type alias Room =
     { id : RoomId
     , players : List Player
+    , game : Maybe Game
     }
 type alias NewRoom =
     { id : RoomId
@@ -55,6 +57,7 @@ emptyRoom : Room
 emptyRoom =
     { id = emptyRoomId
     , players = []
+    , game = Nothing
     }
 
 emptyRoomId : RoomId
@@ -80,3 +83,4 @@ roomDecoder =
     Decode.succeed Room
         |> required "id" idDecoder
         |> required "players" playersDecoder
+        |> optional "game" (Decode.map Just gameDecoder) Nothing

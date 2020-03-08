@@ -1,4 +1,4 @@
-module Page.StartRoom exposing (Model, Msg, init, update, view)
+module Page.GameRoom exposing (Model, Msg, init, update, view)
 
 import Api exposing (urlBase)
 import Browser.Navigation as Nav
@@ -64,14 +64,26 @@ viewRoom room =
             [ text "Loading..." ]
     
         RemoteData.Success actualRoom ->
-            [ h3 [] [ text "Room Code"]
-            , h1 [] [ text (Room.idToString actualRoom.id) ]
-            , viewPlayers actualRoom.players
-            ]
+            let
+                game = actualRoom.game
+            in
+            case game of
+                Just game ->
+                    viewGameRoom actualRoom game
+            
+                Nothing ->
+                    viewStartRoom actualRoom
 
         RemoteData.Failure httpError ->
             httpError |> buildErrorMessage >> viewFetchError
 
+
+viewStartRoom : Room -> List (Html Msg)
+viewStartRoom room =
+    [ h3 [] [ text "Room Code"]
+    , h1 [] [ text (Room.idToString room.id) ]
+    , viewPlayers room.players
+    ]
 
 viewPlayers : List Player -> Html Msg
 viewPlayers players =
@@ -82,6 +94,28 @@ viewPlayers players =
 viewPlayer : Player -> Html Msg
 viewPlayer player =
     li [] [ text player.name ]
+
+viewGameRoom : Room -> Game -> List (Html Msg)
+viewGameRoom room game =
+    [ div [] 
+        [ text "Round: " ++ game.round ]
+    , div []
+        viewTeamScores game.teams
+    , div []
+        [ div [] 
+            [ text "Points: " ++ game.pendingScore ]
+        , h1 [] [ text game.word ]
+        , div []
+            [ button [] [ text "Wrong" ]
+            , button [] [ text "Right" ]
+            ]
+        ]
+    , div [] 
+        [ text "Room Code:"
+        , br [] []
+        , text Room.idToString room.id
+        ]
+    ]
 
 
 viewFetchError : String -> List (Html Msg)

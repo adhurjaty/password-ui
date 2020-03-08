@@ -8,7 +8,7 @@ import Url exposing (Url)
 
 import Page.Start as Start
 import Page.NewRoom as NewRoom
-import Page.StartRoom as StartRoom
+import Page.GameRoom as GameRoom
 import Route exposing (Route)
 
 ---- MODEL ----
@@ -17,7 +17,7 @@ type Page
     = NotFoundPage
     | StartPage Start.Model
     | NewRoomPage NewRoom.Model
-    | StartRoomPage StartRoom.Model
+    | GameRoomPage GameRoom.Model
 
 type alias Model =
     { route : Route
@@ -58,12 +58,12 @@ initCurrentPage ( model, existingCmds ) =
                     in
                     ( NewRoomPage pageModel, Cmd.map NewRoomMsg pageCmds )
 
-                Route.StartRoom roomId ->
+                Route.GameRoom roomId ->
                     let
                         ( pageModel, pageCmds ) =
-                            StartRoom.init roomId model.navKey
+                            GameRoom.init roomId model.navKey
                     in
-                    ( StartRoomPage pageModel, Cmd.map StartRoomMsg pageCmds )
+                    ( GameRoomPage pageModel, Cmd.map GameRoomMsg pageCmds )
     in
     ( { model | page = currentPage } 
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -76,7 +76,7 @@ type Msg
     | UrlChanged Url
     | StartMsg Start.Msg
     | NewRoomMsg NewRoom.Msg
-    | StartRoomMsg StartRoom.Msg
+    | GameRoomMsg GameRoom.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
