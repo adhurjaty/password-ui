@@ -1,4 +1,4 @@
-module Team exposing (Team, teamsDecoder)
+module Team exposing (Team, teamsDecoder, name)
 
 import Json.Decode.Pipeline exposing (required, optional)
 import Json.Decode as Decode exposing (Decoder, int, list, string)
@@ -20,3 +20,8 @@ teamDecoder =
 teamsDecoder : Decoder (List Team)
 teamsDecoder =
     list teamDecoder
+
+
+name : Team -> String
+name team =
+    String.join " + " (List.map (\player -> player.name) team.players)

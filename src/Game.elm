@@ -12,6 +12,8 @@ import Team exposing (Team, teamsDecoder)
 type alias Game =
     { turn : Bool
     , pendingScore : Int
+    , round : Int
+    , word : String
     , teams : List Team
     }
 
@@ -20,5 +22,7 @@ gameDecoder =
     Decode.succeed Game
         |> required "turn" bool
         |> required "pendingScore" int
+        |> required "round" int
+        |> required "word" string
         |> required "teams" teamsDecoder
 

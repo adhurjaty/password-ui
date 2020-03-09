@@ -103,13 +103,13 @@ update msg model =
             , Cmd.map NewRoomMsg updatedCmd
             )
 
-        ( StartRoomMsg subMsg, StartRoomPage roomModel ) ->
+        ( GameRoomMsg subMsg, GameRoomPage roomModel ) ->
             let
                 ( updatedRoomModel,  updatedCmd ) =
-                    StartRoom.update subMsg roomModel
+                    GameRoom.update subMsg roomModel
             in
-            ( { model | page = StartRoomPage updatedRoomModel }
-            , Cmd.map StartRoomMsg updatedCmd
+            ( { model | page = GameRoomPage updatedRoomModel }
+            , Cmd.map GameRoomMsg updatedCmd
             )
 
         ( UrlChanged url, _ ) ->
@@ -150,9 +150,9 @@ currentView model =
             NewRoom.view pageModel
                 |> Html.map NewRoomMsg
 
-        StartRoomPage pageModel ->
-            StartRoom.view pageModel
-                |> Html.map StartRoomMsg
+        GameRoomPage pageModel ->
+            GameRoom.view pageModel
+                |> Html.map GameRoomMsg
 
 
 notFoundView : Html msg

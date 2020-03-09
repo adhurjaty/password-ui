@@ -81,7 +81,7 @@ update msg model =
 
         RoomCreated (Ok newRoom) ->
             ( { model | room = newRoom, createError = Nothing }
-            , Route.pushUrl (Route.StartRoom newRoom.id) model.navKey )
+            , Route.pushUrl (Route.GameRoom newRoom.id) model.navKey )
 
         RoomCreated (Err error) ->
             ( {model | createError = Just (buildErrorMessage error) }

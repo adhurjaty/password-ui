@@ -4,12 +4,14 @@ import Api exposing (urlBase)
 import Browser.Navigation as Nav
 import Components exposing (viewError)
 import Error exposing (buildErrorMessage)
+import Game exposing (Game)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Player exposing (Player)
 import RemoteData exposing(WebData)
 import Room exposing (Room, RoomId, roomDecoder)
+import Team exposing (Team)
 
 type alias Model =
     { navKey : Nav.Key
@@ -65,9 +67,9 @@ viewRoom room =
     
         RemoteData.Success actualRoom ->
             let
-                game = actualRoom.game
+                maybeGame = actualRoom.game
             in
-            case game of
+            case maybeGame of
                 Just game ->
                     viewGameRoom actualRoom game
             
@@ -98,12 +100,12 @@ viewPlayer player =
 viewGameRoom : Room -> Game -> List (Html Msg)
 viewGameRoom room game =
     [ div [] 
-        [ text "Round: " ++ game.round ]
+        [ text ("Round: " ++ String.fromInt game.round) ]
     , div []
-        viewTeamScores game.teams
+        (viewTeamScores game.teams)
     , div []
         [ div [] 
-            [ text "Points: " ++ game.pendingScore ]
+            [ text ("Points: " ++ String.fromInt game.pendingScore) ]
         , h1 [] [ text game.word ]
         , div []
             [ button [] [ text "Wrong" ]
@@ -113,9 +115,22 @@ viewGameRoom room game =
     , div [] 
         [ text "Room Code:"
         , br [] []
-        , text Room.idToString room.id
+        , text (Room.idToString room.id)
         ]
     ]
+
+
+viewTeamScores : List Team -> List (Html Msg)
+viewTeamScores teams =
+    List.map viewTeamScore teams
+
+
+viewTeamScore : Team -> Html Msg
+viewTeamScore team =
+    div [] 
+        [ h2 [] [ text (Team.name team) ]
+        , div [] [ text (String.fromInt team.score) ]
+        ]
 
 
 viewFetchError : String -> List (Html Msg)

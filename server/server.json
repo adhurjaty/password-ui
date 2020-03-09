@@ -8,6 +8,61 @@
                     "name": "Jordan"
                 }
             ]
+        },
+        {
+            "id": "abcd",
+            "players": [
+                {
+                    "id": "lkasdklj",
+                    "name": "Jordan"
+                },
+                {
+                    "id": "sfaweaewaa",
+                    "name": "Anil"
+                },
+                {
+                    "id": "klfanwefae",
+                    "name": "Dan"
+                },
+                {
+                    "id": "jlkfmaewna",
+                    "name": "Izzie"
+                }
+            ],
+            "game" : {
+                "turn": false,
+                "pendingScore": 6,
+                "round": 3,
+                "teams": [
+                    {
+                        "players": [
+                            {
+                                "id": "lkasdklj",
+                                "name": "Jordan"
+                            },
+                            {
+                                "id": "sfaweaewaa",
+                                "name": "Anil"
+                            }
+                        ],
+                        "score": 12
+                    },
+                    {
+                        "players": [
+                            {
+                                "id": "klfanwefae",
+                                "name": "Dan"
+                            },
+                            {
+                                "id": "jlkfmaewna",
+                                "name": "Izzie"
+                            }
+                        ],
+                        "score": 12
+                    }
+                ],
+                "word": "refrigerator"
+            }
         }
     ]
 }
