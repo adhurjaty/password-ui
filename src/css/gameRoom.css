@@ -6,6 +6,24 @@
     display: grid;
     grid-area: content;
     height: 200px;
+    width: 100%;
+}
+
+.player-team-assignment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+.team-label {
+    font-weight: bold;
+}
+
+.team-member-selection {
+    padding: 10px;
+    border: 1px solid gray;
+    background-color: #eee;
 }
 
 .game-room-wrapper {

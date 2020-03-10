@@ -86,20 +86,24 @@ view model =
 viewStartRoom : Room -> Html Msg
 viewStartRoom room =
     div [ class "start-game-content" ]
-        [ h3 [] [ text "Room Code"]
+        [ div [] [ text "Room Code:"]
         , h1 [] [ text (Room.idToString room.id) ]
         , viewPlayers room.players
         ]
 
 viewPlayers : List Player -> Html Msg
 viewPlayers players =
-    ul []
-        ( List.map viewPlayer players )
+    div [ class "player-team-assignment" ]
+        ([ label [ class "team-label" ] [ text "Team 1" ]
+        , label [ class "team-label" ] [ text "Team 2" ]
+        ]
+        ++ List.map viewPlayer players 
+        )
 
 
 viewPlayer : Player -> Html Msg
 viewPlayer player =
-    li [] [ text player.name ]
+    div [ class "team-member-selection" ] [ text player.name ]
 
 viewGameRoom : Room -> Game -> Html Msg
 viewGameRoom room game =
