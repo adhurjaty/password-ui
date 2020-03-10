@@ -1,0 +1,102 @@
+.loading-message {
+    grid-area: content;
+}
+
+.start-game-content {
+    display: grid;
+    grid-area: content;
+    height: 200px;
+}
+
+.game-room-wrapper {
+    display: grid;
+    grid-area: content;
+    height: 750px;
+    grid-template-rows: 50px 1fr 2fr 50px;
+    grid-template-areas:
+    "round"
+    "scoreboard"
+    "game-info"
+    "room-code"
+}
+
+.round-indicator {
+    grid-area: round;
+}
+
+.scoreboard {
+    display: flex;
+    flex-direction: row;
+    grid-area: scoreboard;
+    border-top: solid black 1px;
+    border-bottom: solid black 1px;
+}
+
+.team-score-section {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.team-name-display {
+    line-height: 90%;
+    overflow: visible;
+    word-spacing: 999px;
+    font-size: 1.2em;
+}
+
+.score-display {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+.score-turn {
+    background-color: #00AA00;
+}
+
+.game-info-section {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.word-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 2.7em;
+}
+
+.answer-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.answer-button {
+    height: 60px;
+    width: 150px;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.wrong-button {
+    background-color: #FF2222;
+}
+
+.right-button {
+    background-color: green;
+}
+
+.room-code {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 20px;
+}

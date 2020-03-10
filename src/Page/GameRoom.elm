@@ -50,20 +50,23 @@ update msg model =
             ( { model | room = room }, Cmd.none )
 
 
-view : Model -> Html Msg
-view model =
-    div [ class "start-room-wrapper"]
-        ( viewRoom model.room ++ [ viewError model.startError ] )
+-- view : Model -> Html Msg
+-- view model =
+--     div [ class "game-room-wrapper"]
+--         ( viewRoom model.room ++ [ viewError model.startError ] )
         
 
-viewRoom : WebData Room -> List (Html Msg)
-viewRoom room =
+view : Model -> Html Msg
+view model =
+    let
+        room = model.room
+    in
     case room of
         RemoteData.NotAsked ->
-            [ text "" ]
+            div [] [ text "" ]
 
         RemoteData.Loading ->
-            [ text "Loading..." ]
+            div [ class "loading-message" ] [ text "Loading..." ]
     
         RemoteData.Success actualRoom ->
             let
@@ -80,12 +83,13 @@ viewRoom room =
             httpError |> buildErrorMessage >> viewFetchError
 
 
-viewStartRoom : Room -> List (Html Msg)
+viewStartRoom : Room -> Html Msg
 viewStartRoom room =
-    [ h3 [] [ text "Room Code"]
-    , h1 [] [ text (Room.idToString room.id) ]
-    , viewPlayers room.players
-    ]
+    div [ class "start-game-content" ]
+        [ h3 [] [ text "Room Code"]
+        , h1 [] [ text (Room.idToString room.id) ]
+        , viewPlayers room.players
+        ]
 
 viewPlayers : List Player -> Html Msg
 viewPlayers players =
@@ -97,51 +101,57 @@ viewPlayer : Player -> Html Msg
 viewPlayer player =
     li [] [ text player.name ]
 
-viewGameRoom : Room -> Game -> List (Html Msg)
+viewGameRoom : Room -> Game -> Html Msg
 viewGameRoom room game =
-    [ div [] 
-        [ text ("Round: " ++ String.fromInt game.round) ]
-    , div []
-        (viewTeamScores game.teams)
-    , div []
-        [ div [] 
-            [ text ("Points: " ++ String.fromInt game.pendingScore) ]
-        , h1 [] [ text game.word ]
-        , div []
-            [ button [] [ text "Wrong" ]
-            , button [] [ text "Right" ]
+    div [ class "game-room-wrapper" ]
+        [ div [ class "round-indicator" ] 
+            [ text ("Round: " ++ String.fromInt game.round) ]
+        , div [ class "scoreboard" ]
+            (viewTeamScores game.teams game.turn)
+        , div [ class "game-info-section"]
+            [ div [ class "point-indicator" ] 
+                [ text ("Points: " ++ String.fromInt game.pendingScore) ]
+            , div [ class "word-section" ] [ text game.word ]
+            , div [ class "answer-buttons" ]
+                [ button [ class "answer-button wrong-button" ] [ text "Wrong" ]
+                , button [ class "answer-button right-button" ] [ text "Right" ]
+                ]
             ]
-        ]
-    , div [] 
-        [ text "Room Code:"
-        , br [] []
-        , text (Room.idToString room.id)
-        ]
-    ]
-
-
-viewTeamScores : List Team -> List (Html Msg)
-viewTeamScores teams =
-    List.map viewTeamScore teams
-
-
-viewTeamScore : Team -> Html Msg
-viewTeamScore team =
-    div [] 
-        [ h2 [] [ text (Team.name team) ]
-        , div [] [ text (String.fromInt team.score) ]
+        , div [ class "room-code" ] 
+            [ text ("Room Code: " ++ Room.idToString room.id) ]
         ]
 
 
-viewFetchError : String -> List (Html Msg)
+viewTeamScores : List Team -> Int -> List (Html Msg)
+viewTeamScores teams turn =
+    List.indexedMap (viewTeamScore turn) teams
+
+
+viewTeamScore : Int -> Int -> Team -> Html Msg
+viewTeamScore turn idx team =
+    let
+        turnClass = 
+            if idx == turn then
+                " score-turn"
+            else
+                ""
+    in
+    div [ class ("team-score-section" ++ turnClass) ]
+        [ div [ class "team-name-display" ] [ text (Team.name team) ]
+        , div [ class "score-display" ] [ text (String.fromInt team.score) ]
+        ]
+
+
+viewFetchError : String -> Html Msg
 viewFetchError errorMessage =
     let
         errorHeading =
             "Couldn't fetch posts at this time"    
     in
-    [ h3 [] [text errorHeading ]
-    , text ("Error: " ++ errorMessage)
-    ]
+    div [ class "error-content" ]
+        [ h3 [] [text errorHeading ]
+        , text ("Error: " ++ errorMessage)
+        ]
 
 
             

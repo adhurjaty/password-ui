@@ -30,7 +30,7 @@
                 }
             ],
             "game" : {
-                "turn": false,
+                "turn": 0,
                 "pendingScore": 6,
                 "round": 3,
                 "teams": [
@@ -58,7 +58,7 @@
                                 "name": "Izzie"
                             }
                         ],
-                        "score": 12
+                        "score": 15
                     }
                 ],
                 "word": "refrigerator"

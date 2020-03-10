@@ -10,7 +10,7 @@ import Json.Encode as Encode
 import Team exposing (Team, teamsDecoder)
 
 type alias Game =
-    { turn : Bool
+    { turn : Int
     , pendingScore : Int
     , round : Int
     , word : String
@@ -20,7 +20,7 @@ type alias Game =
 gameDecoder : Decoder Game
 gameDecoder =
     Decode.succeed Game
-        |> required "turn" bool
+        |> required "turn" int
         |> required "pendingScore" int
         |> required "round" int
         |> required "word" string

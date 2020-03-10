@@ -1,6 +1,7 @@
 import './css/main.css';
 import './css/start.css';
 import './css/newRoom.css';
+import './css/gameRoom.css';
 import './css/picnic.min.css';
 import { Elm } from './Main.elm';
 import * as serviceWorker from './serviceWorker';
