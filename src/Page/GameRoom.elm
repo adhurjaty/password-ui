@@ -3,6 +3,7 @@ module Page.GameRoom exposing (Model, Msg, init, update, view)
 import Api exposing (urlBase)
 import Browser.Navigation as Nav
 import Components exposing (viewError)
+import Components.TeamSelector as TeamSelector
 import Error exposing (buildErrorMessage)
 import Game exposing (Game)
 import Html exposing (..)
@@ -88,7 +89,7 @@ viewStartRoom room =
     div [ class "start-game-content" ]
         [ div [] [ text "Room Code:"]
         , h1 [] [ text (Room.idToString room.id) ]
-        , viewPlayers room.players
+        , TeamSelector.view room.players
         ]
 
 viewPlayers : List Player -> Html Msg
