@@ -17,11 +17,13 @@ import Team exposing (Team)
 type alias Model =
     { navKey : Nav.Key
     , room : WebData Room
+    , teamSelector : TeamSelector.Model
     , startError : Maybe String
     }
 
 type Msg
     = RoomReceived (WebData Room)
+    | SelectorMsg TeamSelector.Msg
 
 init : RoomId -> Nav.Key -> ( Model, Cmd Msg )
 init roomId navKey =
@@ -31,6 +33,7 @@ initialModel : Nav.Key -> Model
 initialModel navKey =
     { navKey =  navKey
     , room = RemoteData.Loading
+    , teamSelector = TeamSelector.initialModel
     , startError = Nothing
     }
 
@@ -44,12 +47,35 @@ getRoom roomId =
         }
 
 
-update : Msg -> Model -> ( Model, Cmd Msg)
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         RoomReceived room ->
-            ( { model | room = room }, Cmd.none )
-
+            let
+                selector = model.teamSelector
+                updatedSelector = case room of
+                    RemoteData.Success actualRoom ->
+                        { selector | players = actualRoom.players }
+                    _ ->
+                        selector
+            in
+            ( { model | room = room, teamSelector = updatedSelector }, Cmd.none )
+        SelectorMsg selectorMsg ->
+            let
+                room = model.room
+                ( updatedModel, updatedCmd ) = 
+                    TeamSelector.update selectorMsg model.teamSelector
+                
+                updatedRoom = RemoteData.map 
+                    (\roomData ->
+                        { roomData | players = updatedModel.players }
+                    )
+                    room
+            in
+            ( { model | teamSelector = updatedModel, room = updatedRoom }
+            , Cmd.map SelectorMsg updatedCmd
+            )
+            
 
 -- view : Model -> Html Msg
 -- view model =
@@ -78,33 +104,34 @@ view model =
                     viewGameRoom actualRoom game
             
                 Nothing ->
-                    viewStartRoom actualRoom
+                    viewStartRoom actualRoom model.teamSelector
 
         RemoteData.Failure httpError ->
             httpError |> buildErrorMessage >> viewFetchError
 
 
-viewStartRoom : Room -> Html Msg
-viewStartRoom room =
+viewStartRoom : Room -> TeamSelector.Model -> Html Msg
+viewStartRoom room selectorModel =
     div [ class "start-game-content" ]
         [ div [] [ text "Room Code:"]
         , h1 [] [ text (Room.idToString room.id) ]
-        , TeamSelector.view room.players
+        , TeamSelector.view selectorModel 
+            |> Html.map SelectorMsg
         ]
 
-viewPlayers : List Player -> Html Msg
-viewPlayers players =
-    div [ class "player-team-assignment" ]
-        ([ label [ class "team-label" ] [ text "Team 1" ]
-        , label [ class "team-label" ] [ text "Team 2" ]
-        ]
-        ++ List.map viewPlayer players 
-        )
+-- viewPlayers : List Player -> Html Msg
+-- viewPlayers players =
+--     div [ class "player-team-assignment" ]
+--         ([ label [ class "team-label" ] [ text "Team 1" ]
+--         , label [ class "team-label" ] [ text "Team 2" ]
+--         ]
+--         ++ List.map viewPlayer players 
+--         )
 
 
-viewPlayer : Player -> Html Msg
-viewPlayer player =
-    div [ class "team-member-selection" ] [ text player.name ]
+-- viewPlayer : Player -> Html Msg
+-- viewPlayer player =
+--     div [ class "team-member-selection" ] [ text player.name ]
 
 viewGameRoom : Room -> Game -> Html Msg
 viewGameRoom room game =

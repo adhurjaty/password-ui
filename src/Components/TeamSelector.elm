@@ -1,7 +1,7 @@
 module Components.TeamSelector exposing 
     ( Model
     , Msg
-    , init
+    , initialModel
     , update
     , view
     )
@@ -36,21 +36,15 @@ system =
 
 type alias Model =
     { dnd : DnDList.Model
-    , items : List Player
+    , players : List Player
     }
 
 
 initialModel : Model
 initialModel =
     { dnd = system.model
-    , items = []
+    , players = []
     }
-
-
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( initialModel, Cmd.none )
-
 
 -- UPDATE
 
@@ -64,10 +58,10 @@ update message model =
     case message of
         MyMsg msg ->
             let
-                ( dnd, items ) =
-                    system.update msg model.dnd model.items
+                ( dnd, players ) =
+                    system.update msg model.dnd model.players
             in
-            ( { model | dnd = dnd, items = items }
+            ( { model | dnd = dnd, players = players }
             , system.commands model.dnd
             )
 
@@ -79,10 +73,10 @@ update message model =
 view : Model -> Html.Html Msg
 view model =
     Html.section []
-        [ model.items
+        [ model.players
             |> List.indexedMap (itemView model.dnd)
             |> Html.Keyed.node "div" containerStyles
-        , ghostView model.dnd model.items
+        , ghostView model.dnd model.players
         ]
 
 
@@ -110,6 +104,9 @@ itemView dnd index player =
                 )
 
         Nothing ->
+            let
+                dummy = Debug.log "nothing" "got here"
+            in
             ( player.name
             , Html.div
                 (Html.Attributes.id itemId :: itemStyles green ++ system.dragEvents index itemId)
@@ -118,12 +115,12 @@ itemView dnd index player =
 
 
 ghostView : DnDList.Model -> List Player -> Html.Html Msg
-ghostView dnd items =
+ghostView dnd players =
     let
         maybeDragItem : Maybe Player
         maybeDragItem =
             system.info dnd
-                |> Maybe.andThen (\{ dragIndex } -> items |> List.drop dragIndex |> List.head)
+                |> Maybe.andThen (\{ dragIndex } -> players |> List.drop dragIndex |> List.head)
     in
     case maybeDragItem of
         Just player ->
