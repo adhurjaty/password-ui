@@ -7,9 +7,8 @@ module Components.TeamSelector exposing
     )
 
 import DnDList
-import Html
-import Html.Attributes
-import Html.Keyed
+import Html exposing (..)
+import Html.Attributes exposing (..)
 import Player exposing (Player)
 
 
@@ -60,27 +59,26 @@ update message model =
             let
                 ( dnd, players ) =
                     system.update msg model.dnd model.players
+                dummy = Debug.log "players" (String.join ", " (List.map (\player -> player.name) players))
             in
             ( { model | dnd = dnd, players = players }
             , system.commands model.dnd
             )
 
 
-
--- VIEW
-
-
-view : Model -> Html.Html Msg
+view : Model -> Html Msg
 view model =
-    Html.section []
-        [ model.players
-            |> List.indexedMap (itemView model.dnd)
-            |> Html.Keyed.node "div" containerStyles
-        , ghostView model.dnd model.players
-        ]
+    div [ class "player-team-assignment" ]
+        (
+            [ label [ class "team-label" ] [ text "Team 1" ]
+            , label [class "team-label" ] [ text "Team 2" ] 
+            ]
+            ++ List.indexedMap (itemView model.dnd) model.players
+            ++ [ ghostView model.dnd model.players ]
+        )
 
 
-itemView : DnDList.Model -> Int -> Player -> ( String, Html.Html Msg )
+itemView : DnDList.Model -> Int -> Player -> Html Msg
 itemView dnd index player =
     let
         itemId : String
@@ -90,31 +88,22 @@ itemView dnd index player =
     case system.info dnd of
         Just { dragIndex } ->
             if dragIndex /= index then
-                ( player.name
-                , Html.div
-                    (Html.Attributes.id itemId :: itemStyles green ++ system.dropEvents index itemId)
-                    [ Html.text player.name ]
-                )
+                div
+                    (id itemId :: itemStyles green ++ system.dropEvents index itemId)
+                    [ text player.name ]
 
             else
-                ( player.name
-                , Html.div
-                    (Html.Attributes.id itemId :: itemStyles "dimgray")
+                div
+                    (id itemId :: itemStyles "dimgray")
                     []
-                )
 
         Nothing ->
-            let
-                dummy = Debug.log "nothing" "got here"
-            in
-            ( player.name
-            , Html.div
-                (Html.Attributes.id itemId :: itemStyles green ++ system.dragEvents index itemId)
-                [ Html.text player.name ]
-            )
+            div
+                (id itemId :: itemStyles green ++ system.dragEvents index itemId)
+                [ text player.name ]
 
 
-ghostView : DnDList.Model -> List Player -> Html.Html Msg
+ghostView : DnDList.Model -> List Player -> Html Msg
 ghostView dnd players =
     let
         maybeDragItem : Maybe Player
@@ -124,12 +113,12 @@ ghostView dnd players =
     in
     case maybeDragItem of
         Just player ->
-            Html.div
+            div
                 (itemStyles ghostGreen ++ system.ghostStyles dnd)
-                [ Html.text player.name ]
+                [ text player.name ]
 
         Nothing ->
-            Html.text ""
+            text ""
 
 
 
@@ -149,27 +138,15 @@ ghostGreen =
 
 -- STYLES
 
-
-containerStyles : List (Html.Attribute msg)
-containerStyles =
-    [ Html.Attributes.style "display" "flex"
-    , Html.Attributes.style "flex-wrap" "wrap"
-    , Html.Attributes.style "align-items" "center"
-    , Html.Attributes.style "justify-content" "center"
-    , Html.Attributes.style "padding-top" "2em"
-    ]
-
-
-itemStyles : String -> List (Html.Attribute msg)
+itemStyles : String -> List (Attribute msg)
 itemStyles color =
-    [ Html.Attributes.style "width" "5rem"
-    , Html.Attributes.style "height" "5rem"
-    , Html.Attributes.style "background-color" color
-    , Html.Attributes.style "border-radius" "8px"
-    , Html.Attributes.style "color" "white"
-    , Html.Attributes.style "cursor" "pointer"
-    , Html.Attributes.style "margin" "0 2em 2em 0"
-    , Html.Attributes.style "display" "flex"
-    , Html.Attributes.style "align-items" "center"
-    , Html.Attributes.style "justify-content" "center"
+    [ style "width" "100%"
+    , style "height" "4em"
+    , style "background-color" color
+    , style "border-radius" "8px"
+    , style "color" "white"
+    , style "cursor" "pointer"
+    , style "display" "flex"
+    , style "align-items" "center"
+    , style "justify-content" "center"
     ]
